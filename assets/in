@@ -1,0 +1,10 @@
+#!/bin/sh
+# vim: set ft=sh
+
+source $(dirname $0)/_common.sh
+
+message=$1/message
+
+jq '.result | last'  < $updates > $message
+
+jq '.result | last | { version: {update_id: .update_id | tostring }, metadata: [{name: "author", value: .message.from | tostring} ,{name: "message", value: .message.text}]}'  < $updates >&3
