@@ -1,5 +1,3 @@
-#!/usr/bin/env node --harmony-async-await
-// vim: set ft=js
+#!/usr/bin/env sh
 
-require('./check.js')()
-
+node --harmony-async-await $(dirname $0)/check.js <&0
