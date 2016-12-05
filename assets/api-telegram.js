@@ -11,7 +11,7 @@ const request = (host, path, data) => new Promise((resolve, reject) => {
     let content = ''
     res.setEncoding('utf8');
     res.on('data', chunk => content += chunk )
-    res.on('end', () => resolve(content) )
+    res.on('end', () => resolve(JSON.parse(content)) )
   })
 
   req.on('error', reject)
