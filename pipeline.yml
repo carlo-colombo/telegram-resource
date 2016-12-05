@@ -3,21 +3,18 @@ resource_types:
   type: docker-image
   source:
     repository: carlocolombo/telegram-resource
-- name: telegram-notification
-  type: docker-image
-  source:
-    repository: w32blaster/concourse-telegram-notifier
-    tag: latest
 
 resources:
+- name: telegram2
+  type: telegram
+  source:
+    filter: task2
+    telegram_key: {{telegram_bot_token}}
 - name: telegram1
   type: telegram
   source:
+    filter: task1
     telegram_key: {{telegram_bot_token}}
-- name: telegram-notification
-  type: telegram-notification
-  source:
-    bot_token: {{telegram_bot_token}}
 - name: git-tasks
   type: git
   source:
@@ -32,7 +29,18 @@ jobs:
   - get: git-tasks
   - task: read-message
     file: git-tasks/read-message.yml
-  - put: telegram-notification
+  - put: telegram2
     params:
-      chat_id: '23334928'
-      text: "Build ok. [Build $BUILD_NAME](http://localhost:8080/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME)"
+      chat_id: telegram2/chat_id
+      text: telegram2/text
+- name: test-task2
+  plan:
+  - get: telegram2
+    trigger: true
+  - get: git-tasks
+  - task: read-message
+    file: git-tasks/prepare-message.yml
+  - put: telegram1
+    params:
+      chat_id: telegram1/chat_id
+      text: telegram1/text

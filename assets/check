@@ -1,7 +1,0 @@
-#!/bin/bash
-# vim: set ft=sh
-
-source $(dirname $0)/_common.sh
-
-jq -M  '.result | map({ update_id: .update_id | tostring })'  < $updates >&3
-

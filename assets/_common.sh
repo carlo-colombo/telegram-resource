@@ -11,8 +11,5 @@ cat > $payload <&0
 
 telegram_key=$(jq -r '.source.telegram_key' < $payload )
 latest=$(jq -r '.version.update_id // 0' < $payload)
+filter=$(jq -r '.source.filter' < $payload)
 
-
-base_url="https://api.telegram.org/bot${telegram_key}/getUpdates?offset=$latest"
-
-curl $base_url > $updates

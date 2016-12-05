@@ -1,0 +1,15 @@
+#!/bin/sh
+# vim: set ft=sh
+
+source $(dirname $0)/_common.sh
+
+chat_id=$(cat $1/$(jq -r '.params.chat_id' < $payload))
+text=$(cat $1/$(jq -r '.params.text' < $payload))
+
+
+
+base_url="https://api.telegram.org/bot${telegram_key}/sendMessage"
+resp=$(curl "$base_url?chat_id=${chat_id}&text=${text}")
+
+echo $resp | jq -M '{version: {update_id: null}}' >&3
+
