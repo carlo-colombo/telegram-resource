@@ -7,12 +7,12 @@ async function main(dest){
         params: {chat_id: chat_id_file, text: text_file},
         source: {telegram_key}} = await jsonStdin()
 
+    const api = new Api(telegram_key)
+
     const [chat_id, text] = await Promise.all([
         readFile(path.join(dest, chat_id_file)),
         readFile(path.join(dest, text_file))
     ])
-
-    const api = new Api(telegram_key)
 
     const {result: {chat}} = await api.sendMessage(chat_id, text)
 

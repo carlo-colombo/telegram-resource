@@ -15,8 +15,8 @@ async function main(){
 
 function check(result, filter){
     return result
-        .filter( ({message: {text}}) => filter.test(text))
-        .map( ({update_id}) => ({update_id}) )
+        .filter(({message: {text}}) => filter.test(text))
+        .map(({update_id}) => ({update_id}) )
 }
 
 main()
