@@ -17,18 +17,31 @@ echo $resp | jq -M '{version: {update_id: null}}' >&3
 
 const jsonStdin = require('./json-stdin')
 const Api = require('./api-telegram')
+const path = require('path')
+const {kv, readFile} = require('./utils.js')
 
-async function main(){
+async function main(dest){
     const {
-        params: {chat_id, text},
+        params: {chat_id: chat_id_file, text: text_file},
         source: {telegram_key}} = await jsonStdin()
+
+    const [chat_id, text] = await Promise.all([
+        readFile(path.join(dest, chat_id_file)),
+        readFile(path.join(dest, text_file))
+    ])
 
     const api = new Api(telegram_key)
 
-    const resp = await api.sendMessage(chat_id, text)
+    const {result: {chat}} = await api.sendMessage(chat_id, text)
 
-    console.log(resp)
+    process.stdout.write(JSON.stringify({
+        version: {},
+        metadata: [
+            kv('username', chat.username),
+            kv('chat_id', chat.id)
+        ]
+    }))
 }
 
 
-main()
+main(process.argv.pop())

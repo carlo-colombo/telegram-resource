@@ -28,4 +28,7 @@ module.exports = class Api {
   getUpdates(offset = 0){
     return request(this.hostname, `/bot${this.telegram_key}/getupdates`, {offset})
   }
+  sendMessage(chat_id, text){
+    return request(this.hostname, `/bot${this.telegram_key}/sendMessage`, {chat_id, text})
+  }
 }
