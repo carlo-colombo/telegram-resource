@@ -1,7 +1,6 @@
-const jsonStdin = require('./json-stdin')
 const Api = require('./api-telegram')
 const path = require('path')
-const {kv, readFile} = require('./utils.js')
+const {kv, readFile, jsonStdin} = require('./utils.js')
 
 async function main(dest){
     const {

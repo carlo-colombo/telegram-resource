@@ -1,4 +1,4 @@
-const jsonStdin = require('./json-stdin')
+const {jsonStdin} = require('./utils')
 const Api = require('./api-telegram.js')
 
 async function main(){

@@ -1,5 +1,4 @@
 const fs = require('fs')
-const path = require('path');
 
 function readFile(file){
   return new Promise((resolve,reject) => {
@@ -12,4 +11,12 @@ function readFile(file){
 
 const kv = (name, value) => ({name, value: value.toString()})
 
-module.exports = {readFile, kv}
+const jsonStdin = () => new Promise((resolve,reject) =>{
+  let content = ''
+  process.stdin.resume()
+  process.stdin.on('data', buf => content += buf.toString() )
+  process.stdin.on('end', () => resolve(JSON.parse(content)) )
+})
+
+
+module.exports = {readFile, kv, jsonStdin}
