@@ -9,6 +9,15 @@ function readFile(file){
   })
 }
 
+function writeFile(file, content){
+  return new Promise((resolve,reject) => {
+    fs.writeFile(file, content, (err) => {
+      if (err) return reject(err)
+      resolve()
+    })
+  })
+}
+
 const kv = (name, value) => ({name, value: value.toString()})
 
 const jsonStdin = () => new Promise((resolve,reject) =>{
@@ -19,4 +28,4 @@ const jsonStdin = () => new Promise((resolve,reject) =>{
 })
 
 
-module.exports = {readFile, kv, jsonStdin}
+module.exports = {readFile, kv, jsonStdin, writeFile}
