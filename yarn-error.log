@@ -1,0 +1,49 @@
+Arguments: 
+  /Users/pivotal/.nvm/versions/node/v7.2.0/bin/node /Users/pivotal/.nvm/versions/node/v7.2.0/bin/yarn init
+
+PATH: 
+  /Users/pivotal/.nvm/versions/node/v7.2.0/bin:/opt/dse-4.8.2/bin:/Users/pivotal/.gem/ruby/2.3.1/bin:/Users/pivotal/.rubies/ruby-2.3.1/lib/ruby/gems/2.3.0/bin:/Users/pivotal/.rubies/ruby-2.3.1/bin:/Users/pivotal/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/X11/bin:/Users/pivotal/.fzf/bin:/Users/pivotal/go/bin:/usr/local/opt/go/libexec/bin
+
+Yarn version: 
+  0.17.10
+
+Node version: 
+  7.2.0
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  {
+    "name": "telegram-resource",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/carlo-colombo/telegram-resource.git"
+    },
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/carlo-colombo/telegram-resource/issues"
+    },
+    "homepage": "https://github.com/carlo-colombo/telegram-resource#readme"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  TypeError: Cannot convert object to primitive value
+      at Object.<anonymous> (/Users/pivotal/.nvm/versions/node/v7.2.0/lib/node_modules/yarn/lib/cli/commands/init.js:93:27)
+      at Generator.next (<anonymous>)
+      at step (/Users/pivotal/.nvm/versions/node/v7.2.0/lib/node_modules/yarn/node_modules/babel-runtime/helpers/asyncToGenerator.js:17:30)
+      at /Users/pivotal/.nvm/versions/node/v7.2.0/lib/node_modules/yarn/node_modules/babel-runtime/helpers/asyncToGenerator.js:28:13
+      at process._tickCallback (internal/process/next_tick.js:103:7)

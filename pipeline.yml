@@ -8,12 +8,12 @@ resources:
 - name: telegram2
   type: telegram
   source:
-    filter: task2
+    #filter: task2
     telegram_key: {{telegram_bot_token}}
 - name: telegram1
   type: telegram
   source:
-    filter: task1
+    #filter: task1
     telegram_key: {{telegram_bot_token}}
 - name: git-tasks
   type: git

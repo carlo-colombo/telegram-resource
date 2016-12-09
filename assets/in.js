@@ -8,22 +8,23 @@ function check(result, filter){
 }
 
 async function main(dest){
-    const {
-        source: {filter = ".*", telegram_key, flags},
-        version: {update_id: last_update_id}
-    } = await jsonStdin()
-
-    const api = new Api(telegram_key)
-
-    const {result} = await api.getUpdates(last_update_id)
-
     try {
-        const {update_id, message} = check(result, new RegExp(filter, flags)).pop()
+        const {
+            source: {filter = ".*", telegram_key, flags},
+            version
+        } = await jsonStdin()
+
+        const api = new Api(telegram_key)
+
+        const {update_id} = version || {}
+        const {result} = await api.getUpdates(update_id)
+
+        const {message} = check(result, new RegExp(filter, flags)).pop()
 
         await writeFile(path.join(dest, 'message'), JSON.stringify(message))
 
         process.stdout.write(JSON.stringify({
-            version: {update_id: update_id},
+            version: {update_id: update_id.toString()},
             metadata: [
                 kv('username', message.chat.username),
                 kv('chat_id', message.chat.id)

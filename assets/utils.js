@@ -24,7 +24,13 @@ const jsonStdin = () => new Promise((resolve,reject) =>{
   let content = ''
   process.stdin.resume()
   process.stdin.on('data', buf => content += buf.toString() )
-  process.stdin.on('end', () => resolve(JSON.parse(content)) )
+  process.stdin.on('end', () => {
+    try{
+      resolve(JSON.parse(content))
+    }catch(e){
+      reject(e)
+    }
+  })
 })
 
 
