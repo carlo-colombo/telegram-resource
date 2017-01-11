@@ -16,7 +16,7 @@ async function main(dest){
 
         const api = new Api(telegram_key)
 
-        const {update_id} = version || {}
+        const {update_id=''} = version || {}
         const {result} = await api.getUpdates(update_id)
 
         const {message} = check(result, new RegExp(filter, flags)).pop()
