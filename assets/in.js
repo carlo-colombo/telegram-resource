@@ -33,6 +33,7 @@ async function main(dest){
     }catch (e) {
         console.error(e)
         process.exit(1)
+        return []
     }
 }
 
