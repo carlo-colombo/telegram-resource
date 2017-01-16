@@ -10,25 +10,25 @@ function check(result, filter){
 
 function factory(jsonConfig, MessagingApi){
     return async function main(){
-        try {
-            const {
-                source: {filter = ".*", telegram_key, flags},
-                version
-            } = await Promise.resolve(jsonConfig())
+        const {
+            source: {filter = ".*", telegram_key, flags},
+            version
+        } = await Promise.resolve(jsonConfig())
 
-            const {update_id} = version || {}
-            const api = new MessagingApi(telegram_key)
-            const {result} = await api.getUpdates(update_id)
-            process.stdout.write(JSON.stringify(check(result, new RegExp(filter, flags))))
-        } catch(e){
-            console.log('err')
-            console.error(e)
-            process.stdout.write('[]')
-            return []
-        }
+        const {update_id} = version || {}
+        const api = new MessagingApi(telegram_key)
+        const {result} = await api.getUpdates(update_id)
+        return check(result, new RegExp(filter, flags))
     }
 }
 
 module.exports = factory
 
-factory(jsonStdin, Api)
+if (require.main === module) {
+    try{
+        process.stdout.write(JSON.stringify(factory(jsonStdin, Api)()))
+    } catch(e){
+        console.error('error', e)
+        return []
+    }
+}
