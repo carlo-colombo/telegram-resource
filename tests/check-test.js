@@ -35,4 +35,25 @@ describe('check', () => {
 
     return should(res).be.eql([{update_id: '42'}])
   })
+
+  it('should filter out messages not matching the regex',  async ()=>{
+    const jsonConfigStub = sinon.stub().returns({source: {filter: "not_hi"}, version: null})
+    const main = check(jsonConfigStub, makeMock([
+      {message: {text: 'hi'}, update_id: 42},
+      {message: {text: 'not_hi'}, update_id: 43},
+    ]))
+    const res = await main()
+
+    return should(res).be.eql([{update_id: '43'}])
+  })
+
+  it('should filter out messages not matching the regex, even all of them',  async ()=>{
+    const jsonConfigStub = sinon.stub().returns({source: {filter: "not_hi"}, version: null})
+    const main = check(jsonConfigStub, makeMock([
+      {message: {text: 'hi'}, update_id: 42},
+    ]))
+    const res = await main()
+
+    return should(res).be.eql([])
+  })
 })
