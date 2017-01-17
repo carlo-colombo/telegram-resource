@@ -1,4 +1,4 @@
-const {jsonStdin} = require('./utils')
+const {jsonStdin, jsonStdout} = require('./utils')
 const Api = require('./api-telegram.js')
 
 
@@ -8,17 +8,24 @@ function check(result, filter){
         .map(({update_id}) => ({update_id: update_id.toString()}) )
 }
 
-function factory(jsonConfig, MessagingApi){
-    return async function main(){
+async function readConfig(config, MessagingApi){
         const {
             source: {filter = ".*", telegram_key, flags},
             version
-        } = await Promise.resolve(jsonConfig())
+        } = await Promise.resolve(config)
 
+    return {
+        regex: new RegExp(filter, flags),
+        api: new MessagingApi(telegram_key),
+        version
+    }
+}
+
+function factory(api, version = {}, regex = /.*/){
+    return async function main(){
         const {update_id} = version || {}
-        const api = new MessagingApi(telegram_key)
         const {result} = await api.getUpdates(update_id)
-        return check(result, new RegExp(filter, flags))
+        return check(result, regex)
     }
 }
 
@@ -26,9 +33,12 @@ module.exports = factory
 
 if (require.main === module) {
     try{
-        process.stdout.write(JSON.stringify(factory(jsonStdin, Api)()))
+        const {regex, api, version} = readConfig(jsonStdin(), Api)
+
+        jsonStdout(factory(api, version, regex)())
+        // process.stdout.write(JSON.stringify(factory(jsonStdin, Api)()))
     } catch(e){
         console.error('error', e)
-        return []
+        jsonStdout([])
     }
 }

@@ -13,50 +13,59 @@ function makeMock(result){
 describe('check', () => {
   const jsonConfigStub = sinon.stub().returns({source: {}, version: null})
 
-  it('should return a rejected promise if the conf is missing or not valid', done => {
-    const main = check(sinon.spy())
+  // it('should return a rejected promise if the conf is missing or not valid', done => {
+  //   const main = check(sinon.spy())
 
-    main().then(done, ()=>done())
-  })
+  //   main().then(done, ()=>done())
+  // })
 
   describe('with a valid configuration', ()=>{
     it('returns an empty list in case of no message available', async () =>{
-      const main = check(jsonConfigStub, makeMock([]))
+      const main = check({
+        getUpdates: sinon.mock().returns({result: []})
+      })
       const res = await main()
 
       return should(res).be.eql([])
     })
 
     it('returns an update for each message available', async ()=>{
-      const main = check(jsonConfigStub, makeMock([{
-        message: {text: 'hi'}, update_id: 42
-      }]))
+      const main = check({
+        getUpdates: sinon.mock().returns({
+          result: [{message: {text: 'hi'}, update_id: 42}]
+        })
+      })
       const res = await main()
 
-      return should(res).be.eql([{update_id: '42'}])
+      should(res).be.eql([{update_id: '42'}])
     })
 
   })
 
   describe('with a filter defined', ()=>{
-    const jsonConfigStub = sinon.stub().returns({source: {filter: "not_hi"}, version: null})
     it('filters out messages not matching the regex',  async ()=>{
-      const main = check(jsonConfigStub, makeMock([
-        {message: {text: 'hi'}, update_id: 42},
-        {message: {text: 'not_hi'}, update_id: 43},
-      ]))
-      const res = await main()
+      const res = await check({
+        getUpdates: sinon.mock().returns({
+          result: [
+            {message: {text: 'hi'}, update_id: 42},
+            {message: {text: 'not_hi'}, update_id: 43},
+          ]
+        })
+      }, {}, /not_hi/)()
 
-      return should(res).be.eql([{update_id: '43'}])
+      should(res).be.eql([{update_id: '43'}])
     })
 
     it('filters out messages not matching the regex, even all of them',  async ()=>{
-      const main = check(jsonConfigStub, makeMock([
-        {message: {text: 'hi'}, update_id: 42},
-      ]))
-      const res = await main()
+      const res = check({
+        getUpdates: sinon.mock().returns({
+          result: [
+            {message: {text: 'hi'}, update_id: 42},
+          ]
+        })
+      }, {}, /not_hi/)()
 
-      return should(res).be.eql([])
+      should(await res).be.eql([])
     })
   })
 })

@@ -33,5 +33,8 @@ const jsonStdin = () => new Promise((resolve,reject) =>{
   })
 })
 
+function jsonStdout(val){
+  process.stdout.write(JSON.stringify(val))
+}
 
-module.exports = {readFile, kv, jsonStdin, writeFile}
+module.exports = {readFile, kv, jsonStdin, writeFile, jsonStdout}
