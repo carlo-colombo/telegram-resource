@@ -37,4 +37,24 @@ function jsonStdout(val){
   process.stdout.write(JSON.stringify(val))
 }
 
-module.exports = {readFile, kv, jsonStdin, writeFile, jsonStdout}
+async function readConfig(config, MessagingApi){
+    const {
+        source: {filter = ".*", telegram_key, flags},
+        version
+    } = await config
+
+    return {
+        regex: new RegExp(filter, flags),
+        api: new MessagingApi(telegram_key),
+        version
+    }
+}
+
+module.exports = {
+    readFile,
+    kv,
+    jsonStdin,
+    writeFile,
+    jsonStdout,
+    readConfig
+}
