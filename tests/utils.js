@@ -10,8 +10,7 @@ describe('utils', ()=>{
                 source: {filter: "hello", flags: "gi"}
             }, sinon.spy())
 
-            should(regex.flags).be.eql('gi')
-            should(regex.source).be.eql('hello')
+            should(regex).be.eql(/hello/gi)
         })
 
         it('return the catchall regex if is not defined', async ()=>{
@@ -19,8 +18,7 @@ describe('utils', ()=>{
                 source: {}
             }, sinon.spy())
 
-            should(regex.flags).be.eql('')
-            should(regex.source).be.eql('.*')
+            should(regex).be.eql(/.*/)
         })
     })
 })
