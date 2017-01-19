@@ -14,18 +14,18 @@ describe('check', () => {
   })
 
   describe('with messages available', ()=>{
-      const mockApi = {
-          getUpdates: () => ({
-              result: [
-                  {message: {text: 'hi'}, update_id: 42},
-                  {message: {text: 'not_hi'}, update_id: 43},
-              ]
-          })
-      }
+    const mockApi = {
+      getUpdates: () => ({
+        result: [
+          {message: {text: 'hi'}, update_id: 42},
+          {message: {text: 'not_hi'}, update_id: 43},
+        ]
+      })
+    }
     it('returns an update for each message available', async ()=>{
       const res = check(mockApi)()
 
-        should(await res).be.eql([{update_id: '42'},{update_id: '43'}])
+      should(await res).be.eql([{update_id: '42'},{update_id: '43'}])
     })
 
     describe('with a filter defined', ()=>{
@@ -45,4 +45,15 @@ describe('check', () => {
     })
   })
 
+  describe('when version is defined', ()=>{
+    it('should use it to call getUpdates', ()=>{
+      const mockApi = {
+        getUpdates: sinon.stub().returns({result: []})
+      }
+
+      check(mockApi, {update_id: '42'})()
+
+      sinon.assert.calledWith(mockApi.getUpdates, '42')
+    })
+  })
 })

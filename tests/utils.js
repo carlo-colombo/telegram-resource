@@ -20,5 +20,14 @@ describe('utils', ()=>{
 
             should(regex).be.eql(/.*/)
         })
+
+        it('should instantiate MessagingApi with telegram_key', async ()=>{
+            const MessagingApi = sinon.spy()
+            await readConfig({
+                source: {telegram_key: 'the-key'}
+            }, MessagingApi)
+
+            sinon.assert.calledWith(MessagingApi, 'the-key')
+        })
     })
 })
