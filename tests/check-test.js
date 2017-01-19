@@ -14,35 +14,31 @@ describe('check', () => {
   })
 
   describe('with messages available', ()=>{
-    const mockApi = {
-      getUpdates: () => ({
-        result: [{message: {text: 'hi'}, update_id: 42}]
-      })
-    }
+      const mockApi = {
+          getUpdates: () => ({
+              result: [
+                  {message: {text: 'hi'}, update_id: 42},
+                  {message: {text: 'not_hi'}, update_id: 43},
+              ]
+          })
+      }
     it('returns an update for each message available', async ()=>{
       const res = check(mockApi)()
 
-      should(await res).be.eql([{update_id: '42'}])
+        should(await res).be.eql([{update_id: '42'},{update_id: '43'}])
     })
 
     describe('with a filter defined', ()=>{
       const filter = /not_hi/
 
       it('filters out messages not matching the regex',  async ()=>{
-        const res = await check({
-          getUpdates: () => ({
-            result: [
-              {message: {text: 'hi'}, update_id: 42},
-              {message: {text: 'not_hi'}, update_id: 43},
-            ]
-          })
-        }, {}, filter)()
+        const res = await check(mockApi, {}, filter)()
 
         should(await res).be.eql([{update_id: '43'}])
       })
 
       it('filters out messages not matching the regex, even all of them',  async ()=>{
-        const res = check(mockApi, {}, filter)()
+        const res = check(mockApi, {}, /asd/)()
 
         should(await res).be.eql([])
       })
