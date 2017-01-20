@@ -12,7 +12,6 @@ function factory(api, version = {}, regex = /.*/){
         const {update_id} = version || {}
         const {result} = await api.getUpdates(update_id)
         return check(result, regex)
-            .map(({update_id}) => ({update_id: update_id.toString()}) )
     }
 }
 
@@ -20,13 +19,19 @@ module.exports = {
     factory, check
 }
 
-if (require.main === module) {
+function main(){
     try{
         const {regex, api, version} = readConfig(jsonStdin(), Api)
+        const res = factory(api, version, regex)
+            .map(({update_id}) => ({update_id: update_id.toString()}) )
 
-        jsonStdout(factory(api, version, regex)())
+        jsonStdout(res)
     } catch(e){
         console.error('error', e)
         jsonStdout([])
     }
+}
+
+if (require.main === module) {
+  main()
 }
