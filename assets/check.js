@@ -1,11 +1,9 @@
 const {jsonStdin, jsonStdout, readConfig} = require('./utils')
 const Api = require('./api-telegram.js')
 
-
 function check(result, filter){
     return result
         .filter(({message: {text}}) => filter.test(text))
-        .map(({update_id}) => ({update_id: update_id.toString()}) )
 }
 
 
@@ -14,10 +12,13 @@ function factory(api, version = {}, regex = /.*/){
         const {update_id} = version || {}
         const {result} = await api.getUpdates(update_id)
         return check(result, regex)
+            .map(({update_id}) => ({update_id: update_id.toString()}) )
     }
 }
 
-module.exports = factory
+module.exports = {
+    factory, check
+}
 
 if (require.main === module) {
     try{

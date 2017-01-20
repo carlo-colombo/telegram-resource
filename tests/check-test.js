@@ -1,5 +1,5 @@
 const should = require('should')
-const check = require('../assets/check.js')
+const {factory: check} = require('../assets/check.js')
 const sinon = require('sinon')
 
 describe('check', () => {
