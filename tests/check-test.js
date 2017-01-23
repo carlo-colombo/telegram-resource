@@ -1,6 +1,7 @@
 const should = require('should')
 const {factory: check} = require('../assets/check.js')
 const sinon = require('sinon')
+const {map} = require('lodash')
 
 describe('check', () => {
   describe('with no message available', ()=>{
@@ -25,7 +26,7 @@ describe('check', () => {
     it('returns an update for each message available', async ()=>{
       const res = check(mockApi)()
 
-      should(await res).be.eql([{update_id: '42'},{update_id: '43'}])
+      should(map(await res, 'update_id')).be.eql([42, 43])
     })
 
     describe('with a filter defined', ()=>{
@@ -34,7 +35,7 @@ describe('check', () => {
       it('filters out messages not matching the regex',  async ()=>{
         const res = await check(mockApi, {}, filter)()
 
-        should(await res).be.eql([{update_id: '43'}])
+        should(map(await res, 'update_id')).be.eql([43])
       })
 
       it('filters out messages not matching the regex, even all of them',  async ()=>{
