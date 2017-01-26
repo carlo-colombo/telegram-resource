@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --harmony --watch tests/**/*"
+    "test": "mocha --harmony tests/**/*"
   },
   "repository": {
     "type": "git",
