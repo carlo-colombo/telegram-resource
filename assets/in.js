@@ -1,32 +1,38 @@
 const Api = require('./api-telegram')
 const path = require('path')
-const {kv, writeFile, jsonStdin} = require('./utils.js')
+const {kv, writeFile, jsonStdin, jsonStdout} = require('./utils.js')
+const {check} = require('./check.js')
 
-async function main(dest){
+async function main(readConfig, jsonStdin, Api, check, writeFile, dest){
     try {
-        const dest = process.argv.pop()
+        const {regex, api, version} = await readConfig(jsonStdin(), Api)
 
-        const {regex, api, version} = readConfig(jsonStdin(), Api)
+        const message = check(api, version, regex).pop()
 
-        const res = factory(api, version, regex)().pop()
+        if(!message) return {}
 
         await writeFile(
             path.join(dest, 'message'),
             JSON.stringify(message))
 
-        jsonStdout(JSON.stringify({
+        return {
             version: {update_id: version.update_id.toString()},
             metadata: [
                 kv('username', message.chat.username),
                 kv('chat_id', message.chat.id)
             ]
-        }))
+        }
     }catch (e) {
         console.error('error', e)
-        jsonStdout([])
+        return {}
     }
 }
 
+
+module.exports = {
+     main
+}
+
 if (require.main === module) {
-  main()
+  jsonStdout(main(readConfig, jsonStdin, Api, check, writeFile, process.argv.pop()))
 }

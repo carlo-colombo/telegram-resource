@@ -4,7 +4,7 @@ const sinon = require('sinon')
 const {map, noop} = require('lodash')
 
 
-console.error = ()=>{}
+// console.error = ()=>{}
 
 describe('check', () => {
   describe('with no message available', ()=>{
