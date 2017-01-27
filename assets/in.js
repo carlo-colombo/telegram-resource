@@ -1,6 +1,6 @@
 const Api = require('./api-telegram')
 const path = require('path')
-const {kv, writeFile, jsonStdin, jsonStdout} = require('./utils.js')
+const {kv, writeFile, jsonStdin, jsonStdout, readConfig} = require('./utils.js')
 const {check} = require('./check.js')
 
 async function main(readConfig, jsonStdin, Api, check, writeFile, dest){
