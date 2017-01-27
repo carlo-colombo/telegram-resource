@@ -1,0 +1,60 @@
+resource_types:
+- name: telegram
+  type: docker-image
+  source:
+    repository: carlocolombo/telegram-resource
+
+resources:
+- name: git-telegram-resource
+  type: git
+  source:
+    uri: https://github.com/carlo-colombo/telegram-resource.git
+    branch: refactor-to-js
+- name: docker-telegram-resource
+  type: docker-image
+  source:
+    repository: carlocolombo/telegram-resource
+    username: {{docker_username}}
+    password: {{docker_password}}
+- name: telegram-resource
+  type: telegram
+  source:
+    telegram_key: {{telegram_bot_token}}
+
+jobs:
+- name: run-test
+  plan:
+  - get: git-telegram-resource
+    trigger: true
+  - task: test-code
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: mhart/alpine-node
+          tag: '7'
+      inputs:
+      - name: git-telegram-resource
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cd git-telegram-resource
+          npm install
+          npm test
+- name: build-docker-image
+  plan:
+  - get: git-telegram-resource
+    trigger: true
+    passed: [run-test]
+  - put: docker-telegram-resource
+    params: {build: git-telegram-resource}
+- name: smoke-tests
+  plan:
+  - get: docker-telegram-resource
+    trigger: true
+    passed: [build-docker-image]
+  - get: telegram-resource
+
