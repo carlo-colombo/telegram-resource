@@ -8,8 +8,9 @@ resources:
 - name: git-telegram-resource
   type: git
   source:
-    uri: https://github.com/carlo-colombo/telegram-resource.git
-    branch: refactor-to-js
+    uri: &git-repo git@github.com:carlo-colombo/telegram-resource.git
+    branch: &git-branch refactor-to-js
+    private_key: {{private_key}}
 - name: docker-telegram-resource
   type: docker-image
   source:
@@ -20,6 +21,14 @@ resources:
   type: telegram
   source:
     telegram_key: {{telegram_bot_token}}
+- name: dev-version
+  type: semver
+  source:
+    driver: git
+    uri: *git-repo
+    branch: *git-branch
+    file: version
+    private_key: {{private_key}}
 
 jobs:
 - name: run-test
@@ -44,13 +53,57 @@ jobs:
           cd git-telegram-resource
           npm install
           npm test
-- name: build-docker-image
+- name: bump-version
   plan:
   - get: git-telegram-resource
     trigger: true
     passed: [run-test]
+  - put: dev-version
+    params: {pre: 'dev'}
+  - task: bump-version
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: carlocolombo/ci-task-runner
+      inputs:
+      - name: git-telegram-resource
+      - name: dev-version
+      params:
+        GIT_EMAIL: {{git-email}}
+        GIT_USER_NAME: {{git-username}}
+      run:
+        path: sh
+        args:
+        - -xce
+        - |
+          VERSION=$(cat dev-version/version)
+          git config --global user.email $GIT_EMAIL
+          git config --global user.name $GIT_USER_NAME
+          cd git-telegram-resource
+          git branch
+          git checkout refactor-to-js
+          npm version $VERSION
+          cat package.json | jq '.version'
+          git show HEAD 
+  - put: git-telegram-resource
+    params:
+      rebase: true
+      tag: dev-version/version
+      tag_prefix: v
+      repository: git-telegram-resource
+- name: build-docker-image
+  plan:
+  - get: git-telegram-resource
+    passed: [bump-version]
+    trigger: true
+  - get: dev-version
+    passed: [bump-version]
   - put: docker-telegram-resource
-    params: {build: git-telegram-resource}
+    params:
+      build: git-telegram-resource
+      tag: dev-version/version
 - name: smoke-tests
   plan:
   - get: docker-telegram-resource
