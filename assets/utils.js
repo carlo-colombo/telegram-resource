@@ -33,8 +33,8 @@ const jsonStdin = () => new Promise((resolve, reject) => {
   });
 });
 
-function jsonStdout(val) {
-  process.stdout.write(JSON.stringify(val));
+async function jsonStdout(val) {
+  process.stdout.write(JSON.stringify(await val));
 }
 
 async function readConfig(config, MessagingApi) {
