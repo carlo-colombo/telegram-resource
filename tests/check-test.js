@@ -1,5 +1,5 @@
 const should = require('should');
-const { check, main } = require('../assets/check.js');
+const { check, main } = require('../src/check.js');
 const sinon = require('sinon');
 const { map, noop } = require('lodash');
 

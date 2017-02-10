@@ -1,5 +1,5 @@
 const should = require('should');
-const { readConfig } = require('../assets/utils.js');
+const { readConfig } = require('../src/utils.js');
 const sinon = require('sinon');
 
 describe('utils', () => {

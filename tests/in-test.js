@@ -1,4 +1,4 @@
-const { main } = require('../assets/in.js');
+const { main } = require('../src/in.js');
 const { noop } = require('lodash');
 const sinon = require('sinon');
 const should = require('should');

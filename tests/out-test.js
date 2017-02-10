@@ -1,8 +1,8 @@
 const should = require('should');
-const { check, main } = require('../assets/out.js');
+const { check, main } = require('../src/out.js');
 const sinon = require('sinon');
 const { map, noop } = require('lodash');
-const { kv } = require('../assets/utils.js');
+const { kv } = require('../src/utils.js');
 
 describe('out', () => {
   let readFile, sendMessage, readConfig;
