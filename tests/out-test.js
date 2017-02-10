@@ -38,4 +38,44 @@ describe('out', () => {
       metadata: [kv('username', 'carlo'), kv('chat_id', '42')]
     });
   });
+
+  describe('should return an empty object', () => {
+    let throwFn;
+
+    beforeEach(() => {
+      throwFn = sinon.stub().throws();
+    });
+
+    it('when readConfig return an error', async () => {
+      const res = await main(throwFn, noop, noop, noop, '');
+      sinon.assert.called(throwFn);
+      should(res).be.eql({});
+    });
+
+    it('when jsonStdin return an error', async () => {
+      const res = await main(noop, throwFn, noop, noop, '');
+      sinon.assert.called(throwFn);
+      should(res).be.eql({});
+    });
+
+    it('when readFile return an error', async () => {
+      const readFile = sinon.stub().throws();
+
+      const res = await main(readConfig, noop, noop, readFile, '/a/path');
+      sinon.assert.called(readFile);
+      should(res).be.eql({});
+    });
+    it('when sendMessage return an error', async () => {
+      sendMessage = sinon.stub().throws();
+      readConfig = sinon.stub().returns({
+        api: { sendMessage },
+        chat_id: 'chat_id_file_path',
+        text: 'text_file_path'
+      });
+
+      const res = await main(readConfig, noop, noop, readFile, '/a/path');
+      sinon.assert.called(sendMessage);
+      should(res).be.eql({});
+    });
+  });
 });
