@@ -1,6 +1,7 @@
+/* @flow */
 const fs = require('fs');
 
-function readFile(file) {
+function readFile(file: string): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.readFile(file, 'utf8', (err, data) => {
       if (err) return reject(err);
@@ -9,7 +10,7 @@ function readFile(file) {
   });
 }
 
-function writeFile(file, content) {
+function writeFile(file: string, content: string): Promise<any> {
   return new Promise((resolve, reject) => {
     fs.writeFile(file, content, err => {
       if (err) return reject(err);
@@ -18,10 +19,15 @@ function writeFile(file, content) {
   });
 }
 
-const kv = (name, value) => ({ name, value: value.toString() });
+function kv(name: string, value: string): { name: string, value: string } {
+  return {
+    name,
+    value: value.toString()
+  };
+}
 
 const jsonStdin = () => new Promise((resolve, reject) => {
-  let content = '';
+  let content: string = '';
   process.stdin.resume();
   process.stdin.on('data', buf => content += buf.toString());
   process.stdin.on('end', () => {
@@ -33,11 +39,11 @@ const jsonStdin = () => new Promise((resolve, reject) => {
   });
 });
 
-async function jsonStdout(val) {
+async function jsonStdout(val: any): Promise<any> {
   process.stdout.write(JSON.stringify(await val));
 }
 
-async function readConfig(config, MessagingApi) {
+async function readConfig(config: Object, MessagingApi: Function) {
   const {
     source: { filter = '.*', telegram_key, flags },
     version
