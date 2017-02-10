@@ -5,7 +5,8 @@
   "scripts": {
     "test": "mocha --harmony tests/**/* --require ./tests/test_helper.js --require flow-remove-types/register",
     "flow:watch": "flow-watch",
-    "flow": "flow"
+    "flow": "flow",
+    "flow:remove-types": "flow-remove-types src/ --out-dir assets"
   },
   "repository": {
     "type": "git",
