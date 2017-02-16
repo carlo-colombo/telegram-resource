@@ -84,9 +84,8 @@ jobs:
           cd git-telegram-resource
           git branch
           git checkout refactor-to-js
-          npm version $VERSION
+          npm version $VERSION -m"bump to $VERSION [skip ci]"
           cat package.json | jq '.version'
-          git show HEAD 
   - put: git-telegram-resource
     params:
       rebase: true
