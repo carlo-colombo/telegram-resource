@@ -1,7 +1,10 @@
+/* @flow */
 const Api = require('./api-telegram');
 const path = require('path');
 
-async function main(readConfig, jsonStdin, Api, readFile, dest) {
+import type { Configuration } from './types';
+
+async function main(readConfig: Function, readFile: Function, dest: string) {
   try {
     const {
       api,
@@ -34,10 +37,10 @@ module.exports = {
   main
 };
 
-const { kv, readFile, jsonStdin } = require('./utils.js');
+const { kv, readFile, jsonStdin, jsonStdout, readConfig } = require(
+  './utils.js'
+);
 
 if (require.main === module) {
-  jsonStdout(
-    main(readConfig, jsonStdin, Api, check, writeFile, process.argv.pop())
-  );
+  jsonStdout(main(readConfig, jsonStdin, Api, readFile, process.argv.pop()));
 }

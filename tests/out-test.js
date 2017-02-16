@@ -23,7 +23,7 @@ describe('out', () => {
   });
 
   it('call the api to send a message', async () => {
-    await main(readConfig, noop, noop, readFile, '/a/folder');
+    await main(readConfig, readFile, '/a/folder');
 
     sinon.assert.calledWith(sendMessage, '42', 'hello');
     sinon.assert.calledWith(readFile, '/a/folder/chat_id_file_path');
@@ -31,7 +31,7 @@ describe('out', () => {
   });
 
   it('returns some metadata', async () => {
-    const res = main(readConfig, noop, noop, noop, '');
+    const res = main(readConfig, noop, '');
 
     should(await res).be.eql({
       version: {},
@@ -47,13 +47,7 @@ describe('out', () => {
     });
 
     it('when readConfig return an error', async () => {
-      const res = await main(throwFn, noop, noop, noop, '');
-      sinon.assert.called(throwFn);
-      should(res).be.eql({});
-    });
-
-    it('when jsonStdin return an error', async () => {
-      const res = await main(noop, throwFn, noop, noop, '');
+      const res = await main(throwFn, noop, '');
       sinon.assert.called(throwFn);
       should(res).be.eql({});
     });
@@ -61,7 +55,7 @@ describe('out', () => {
     it('when readFile return an error', async () => {
       const readFile = sinon.stub().throws();
 
-      const res = await main(readConfig, noop, noop, readFile, '/a/path');
+      const res = await main(readConfig, readFile, '/a/path');
       sinon.assert.called(readFile);
       should(res).be.eql({});
     });
@@ -73,7 +67,7 @@ describe('out', () => {
         text: 'text_file_path'
       });
 
-      const res = await main(readConfig, noop, noop, readFile, '/a/path');
+      const res = await main(readConfig, readFile, '/a/path');
       sinon.assert.called(sendMessage);
       should(res).be.eql({});
     });

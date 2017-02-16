@@ -1,6 +1,8 @@
 /* @flow */
 const fs = require('fs');
 
+import type { ConcourseConfiguration, Configuration } from './types';
+
 function readFile(file: string): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.readFile(file, 'utf8', (err, data) => {
@@ -19,7 +21,7 @@ function writeFile(file: string, content: string): Promise<any> {
   });
 }
 
-function kv(name: string, value: string): { name: string, value: string } {
+function kv(name: string, value: any): { name: string, value: string } {
   return {
     name,
     value: value.toString()
@@ -43,7 +45,10 @@ async function jsonStdout(val: any): Promise<any> {
   process.stdout.write(JSON.stringify(await val));
 }
 
-async function readConfig(config: Object, MessagingApi: Function) {
+async function readConfig(
+  config: Promise<ConcourseConfiguration> | ConcourseConfiguration,
+  MessagingApi: Function
+): Promise<Configuration> {
   const {
     source: { filter = '.*', telegram_key, flags },
     version
