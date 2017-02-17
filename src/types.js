@@ -14,3 +14,5 @@ export type ConcourseConfiguration = {
 };
 
 export type ReadConfiguration = (...rest: Array<any>) => Promise<Configuration>;
+
+export type Metadata = { name: string, value: string };

@@ -41,6 +41,7 @@ describe('out', () => {
 
   describe('should return an empty object', () => {
     let throwFn;
+    const emptyResp = { version: {}, metadata: [] };
 
     beforeEach(() => {
       throwFn = sinon.stub().throws();
@@ -49,7 +50,7 @@ describe('out', () => {
     it('when readConfig return an error', async () => {
       const res = await main(throwFn, noop, '');
       sinon.assert.called(throwFn);
-      should(res).be.eql({});
+      should(res).be.eql(emptyResp);
     });
 
     it('when readFile return an error', async () => {
@@ -57,8 +58,9 @@ describe('out', () => {
 
       const res = await main(readConfig, readFile, '/a/path');
       sinon.assert.called(readFile);
-      should(res).be.eql({});
+      should(res).be.eql(emptyResp);
     });
+
     it('when sendMessage return an error', async () => {
       sendMessage = sinon.stub().throws();
       readConfig = sinon.stub().returns({
@@ -69,7 +71,7 @@ describe('out', () => {
 
       const res = await main(readConfig, readFile, '/a/path');
       sinon.assert.called(sendMessage);
-      should(res).be.eql({});
+      should(res).be.eql(emptyResp);
     });
   });
 });

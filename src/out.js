@@ -2,9 +2,13 @@
 const Api = require('./api-telegram');
 const path = require('path');
 
-import type { Configuration } from './types';
+import type { Configuration, ReadConfiguration, Metadata } from './types';
 
-async function main(readConfig: Function, readFile: Function, dest: string) {
+async function main(
+  readConfig: ReadConfiguration,
+  readFile: Function,
+  dest: string
+): Promise<{ version: Object, metadata: Array<Metadata> }> {
   try {
     const {
       api,
@@ -12,7 +16,7 @@ async function main(readConfig: Function, readFile: Function, dest: string) {
       text: text_file
     } = await readConfig(jsonStdin(), Api);
 
-    const [chat_id, text] = await Promise.all([
+    const [chat_id, text]: [string, string] = await Promise.all([
       readFile(path.join(dest, chat_id_file)),
       readFile(path.join(dest, text_file))
     ]);
@@ -29,7 +33,10 @@ async function main(readConfig: Function, readFile: Function, dest: string) {
     };
   } catch (e) {
     console.error(e);
-    return {};
+    return {
+      version: {},
+      metadata: []
+    };
   }
 }
 
@@ -42,5 +49,5 @@ const { kv, readFile, jsonStdin, jsonStdout, readConfig } = require(
 );
 
 if (require.main === module) {
-  jsonStdout(main(readConfig, jsonStdin, Api, readFile, process.argv.pop()));
+  jsonStdout(main(readConfig, readFile, process.argv.pop()));
 }
