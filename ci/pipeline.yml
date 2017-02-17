@@ -97,11 +97,32 @@ jobs:
   - get: git-telegram-resource
     passed: [bump-version]
     trigger: true
+  - task: prepare-sources
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: carlocolombo/ci-task-runner
+      inputs:
+      - name: git-telegram-resource
+      run:
+        path: sh
+        args:
+        - -xce
+        - |
+          cd git-telegram-resource
+          yarn
+          npm run flow:remove-types
+          cp Dockerfile ../docker-source
+          cp -r assets ../docker-source
+      outputs:
+      - name: docker-source
   - get: dev-version
     passed: [bump-version]
   - put: docker-telegram-resource
     params:
-      build: git-telegram-resource
+      build: docker-source
       tag: dev-version/version
 - name: smoke-tests
   plan:
