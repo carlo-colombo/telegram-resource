@@ -65,32 +65,32 @@ describe('check', () => {
 
   describe('main', () => {
     describe('should return an empty array', () => {
-      it('when readConfig throw an exception', () => {
+      it('when readConfig throw an exception', async () => {
         const res = main(sinon.stub.throws(), noop, noop, noop);
-        should(res).be.eql([]);
+        should(await res).be.eql([]);
       });
-      it('when jsonStdin throw an exception', () => {
+      it('when jsonStdin throw an exception', async () => {
         const res = main(noop, sinon.stub.throws(), noop, noop);
-        should(res).be.eql([]);
+        should(await res).be.eql([]);
       });
-      it('when Api throw an exception', () => {
+      it('when Api throw an exception', async () => {
         const res = main(noop, noop, sinon.stub.throws(), noop);
-        should(res).be.eql([]);
+        should(await res).be.eql([]);
       });
-      it('when check throw an exception', () => {
+      it('when check throw an exception', async () => {
         const res = main(noop, noop, noop, sinon.stub.throws());
-        should(res).be.eql([]);
+        should(await res).be.eql([]);
       });
     });
 
     describe('when updates are available', () => {
-      it('return a list of updates', () => {
+      it('return a list of updates', async () => {
         const check = sinon
           .stub()
           .returns([{ message: { text: 'hi' }, update_id: 42 }]);
 
         const res = main(sinon.stub().returns({}), noop, noop, check);
-        should(res).be.eql([{ update_id: '42' }]);
+        should(await res).be.eql([{ update_id: '42' }]);
       });
     });
   });

@@ -8,10 +8,10 @@ async function check(api, version = {}, regex = /.*/) {
   return result.filter(({ message: { text } }) => regex.test(text));
 }
 
-function main(readConfig, jsonStdin, Api, check) {
+async function main(readConfig, jsonStdin, Api, check) {
   try {
     const { regex, api, version } = readConfig(jsonStdin(), Api);
-    const res = check(api, version, regex).map(({ update_id }) => ({
+    const res = (await check(api, version, regex)).map(({ update_id }) => ({
       update_id: update_id.toString()
     }));
 

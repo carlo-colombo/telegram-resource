@@ -13,7 +13,7 @@ async function main(readConfig, jsonStdin, Api, check, writeFile, dest) {
   try {
     const { regex, api, version } = await readConfig(jsonStdin(), Api);
 
-    const message = check(api, version, regex).pop();
+    const message = (await check(api, version, regex)).pop();
 
     if (!message) return {};
 
