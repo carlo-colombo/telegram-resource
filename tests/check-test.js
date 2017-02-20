@@ -3,8 +3,6 @@ const { check, main } = require('../src/check.js');
 const sinon = require('sinon');
 const { map, noop } = require('lodash');
 
-// console.error = ()=>{}
-
 describe('check', () => {
   describe('with no message available', () => {
     it('returns an empty list', async () => {

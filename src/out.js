@@ -14,7 +14,7 @@ async function main(
       api,
       chat_id: chat_id_file,
       text: text_file
-    } = await readConfig(jsonStdin(), Api);
+    } = await readConfig();
 
     const [chat_id, text]: [string, string] = await Promise.all([
       readFile(path.join(dest, chat_id_file)),
@@ -44,9 +44,8 @@ module.exports = {
   main
 };
 
-const { kv, readFile, jsonStdin, jsonStdout, readConfig } = require(
-  './utils.js'
-);
+const { kv, readFile, jsonStdout } = require('./utils.js');
+const { readConfig } = require('./wirings.js');
 
 if (require.main === module) {
   jsonStdout(main(readConfig, readFile, process.argv.pop()));
