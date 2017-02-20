@@ -64,19 +64,11 @@ describe('check', () => {
   describe('main', () => {
     describe('should return an empty array', () => {
       it('when readConfig throw an exception', async () => {
-        const res = main(sinon.stub.throws(), noop, noop, noop);
-        should(await res).be.eql([]);
-      });
-      it('when jsonStdin throw an exception', async () => {
-        const res = main(noop, sinon.stub.throws(), noop, noop);
-        should(await res).be.eql([]);
-      });
-      it('when Api throw an exception', async () => {
-        const res = main(noop, noop, sinon.stub.throws(), noop);
+        const res = main(sinon.stub.throws(), noop);
         should(await res).be.eql([]);
       });
       it('when check throw an exception', async () => {
-        const res = main(noop, noop, noop, sinon.stub.throws());
+        const res = main(noop, sinon.stub.throws());
         should(await res).be.eql([]);
       });
     });
@@ -87,8 +79,9 @@ describe('check', () => {
           .stub()
           .returns([{ message: { text: 'hi' }, update_id: 42 }]);
 
-        const res = main(sinon.stub().returns({}), noop, noop, check);
-        should(await res).be.eql([{ update_id: '42' }]);
+        const res = await main(() => ({}), check);
+        sinon.assert.called(check);
+        should(res).be.eql([{ update_id: '42' }]);
       });
     });
   });

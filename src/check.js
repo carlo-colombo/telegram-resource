@@ -1,5 +1,5 @@
-const { jsonStdin, jsonStdout, readConfig } = require('./utils');
-const Api = require('./api-telegram.js');
+const { jsonStdin, jsonStdout } = require('./utils');
+const { readConfig } = require('./wirings');
 
 async function check(api, version = {}, regex = /.*/) {
   const { update_id } = version || {};
@@ -8,9 +8,9 @@ async function check(api, version = {}, regex = /.*/) {
   return result.filter(({ message: { text } }) => regex.test(text));
 }
 
-async function main(readConfig, jsonStdin, Api, check) {
+async function main(readConfig, check) {
   try {
-    const { regex, api, version } = readConfig(jsonStdin(), Api);
+    const { regex, api, version } = await readConfig();
     const res = (await check(api, version, regex)).map(({ update_id }) => ({
       update_id: update_id.toString()
     }));
@@ -28,5 +28,5 @@ module.exports = {
 };
 
 if (require.main === module) {
-  jsonStdout(main(readConfig, jsonStdin, Api, check));
+  jsonStdout(main(readConfig, check));
 }
