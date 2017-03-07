@@ -116,14 +116,20 @@ jobs:
           npm run flow:remove-types
           cp Dockerfile ../docker-source
           cp -r assets ../docker-source
+          echo 'latest-dev' > ../docker-source/latest-dev
       outputs:
       - name: docker-source
   - get: dev-version
     passed: [bump-version]
-  - put: docker-telegram-resource
-    params:
-      build: docker-source
-      tag: dev-version/version
+  - aggregate:
+    - put: docker-telegram-resource
+      params:
+        build: docker-source
+        tag: dev-version/version
+    - put: docker-telegram-resource
+      params:
+        build: docker-source
+        tag: docker-source/latest-dev
 - name: smoke-tests
   plan:
   - get: docker-telegram-resource
