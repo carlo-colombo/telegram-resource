@@ -30,12 +30,14 @@ describe('in', () => {
 
     describe('when updates are available', () => {
       const update = {
-        message: { text: 'hi' },
-        update_id: 42,
-        chat: {
-          username: 'carlo',
-          id: 123
-        }
+        message: {
+          text: 'hi',
+          chat: {
+            username: 'carlo',
+            id: 123
+          }
+        },
+        update_id: 42
       },
         version = { update_id: '42' };
 
@@ -47,7 +49,7 @@ describe('in', () => {
       });
 
       it('returns the last update', async () => {
-        const res = main(readConfig, noop, noop, check, noop, '');
+        const res = main(readConfig, check, noop, '');
         should(await res).be.eql({
           version,
           metadata: [
@@ -58,21 +60,14 @@ describe('in', () => {
       });
 
       it('call writeFile with the update as string', async () => {
-        const writeFileMock = sinon.stub();
+        const writeFileMock = sinon.stub().returns(Promise.resolve());
         const dest = '/a-file-path';
-        const res = await main(
-          readConfig,
-          noop,
-          noop,
-          check,
-          writeFileMock,
-          dest
-        );
+        const res = await main(readConfig, check, writeFileMock, dest);
 
         sinon.assert.calledWith(
           writeFileMock,
           `${dest}/message`,
-          JSON.stringify(update)
+          JSON.stringify(update.message)
         );
       });
 
@@ -82,7 +77,7 @@ describe('in', () => {
           console.error = sinon.spy();
         });
         it('returns an empty object', async () => {
-          const res = main(readConfig, noop, noop, () => [], noop, '/path');
+          const res = main(readConfig, () => [], noop, '/path');
           should(await res).be.eql({});
           should(console.error.called).be.not.ok();
         });
