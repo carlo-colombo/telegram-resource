@@ -12,8 +12,10 @@ async function main(
   try {
     const {
       api,
-      chat_id: chat_id_file,
-      text: text_file
+      params: {
+        chat_id: chat_id_file,
+        text: text_file
+      }
     } = await readConfig();
 
     const [chat_id, text]: [string, string] = await Promise.all([
@@ -32,7 +34,7 @@ async function main(
       ]
     };
   } catch (e) {
-    console.error(e);
+    console.error('error', e);
     return {
       version: {},
       metadata: []

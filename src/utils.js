@@ -51,13 +51,15 @@ async function readConfig(
 ): Promise<Configuration> {
   const {
     source: { filter = '.*', telegram_key, flags },
-    version
+    version,
+    params
   } = await config;
 
   return {
     regex: new RegExp(filter, flags),
     api: new MessagingApi(telegram_key),
-    version
+    version,
+    params
   };
 }
 

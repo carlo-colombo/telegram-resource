@@ -17,8 +17,10 @@ describe('out', () => {
 
     readConfig = sinon.stub().returns({
       api: { sendMessage },
-      chat_id: 'chat_id_file_path',
-      text: 'text_file_path'
+      params: {
+        chat_id: 'chat_id_file_path',
+        text: 'text_file_path'
+      }
     });
   });
 
@@ -65,8 +67,10 @@ describe('out', () => {
       sendMessage = sinon.stub().throws();
       readConfig = sinon.stub().returns({
         api: { sendMessage },
-        chat_id: 'chat_id_file_path',
-        text: 'text_file_path'
+        params: {
+          chat_id: 'chat_id_file_path',
+          text: 'text_file_path'
+        }
       });
 
       const res = await main(readConfig, readFile, '/a/path');

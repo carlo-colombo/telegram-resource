@@ -25,5 +25,21 @@ describe('utils', () => {
 
       sinon.assert.calledWith(MessagingApi, 'the-key');
     });
+
+    it('returns params as is', async () => {
+      const ret = await readConfig(
+        {
+          source: {},
+          params: {
+            chat_id: 'foo',
+            text: 'bar'
+          }
+        },
+        sinon.spy()
+      );
+
+      should(ret.params.chat_id).be.eql('foo');
+      should(ret.params.text).be.eql('bar');
+    });
   });
 });
