@@ -78,4 +78,51 @@ describe('out', () => {
       should(res).be.eql(emptyResp);
     });
   });
+
+  describe('can handle a full message', () => {
+    const message = {
+      chat_id: '42',
+      text: 'hallo',
+      parse_mode: 'markdown'
+    };
+
+    let sendFullMessage;
+
+    beforeEach(() => {
+      readFile = sinon.stub().returns(JSON.stringify(message));
+      sendFullMessage = sinon.stub().returns({
+        result: { chat: { id: 42, username: 'carlo' } }
+      });
+    });
+
+    it('call the api with the message', async () => {
+      readConfig = sinon.stub().returns({
+        api: { sendFullMessage },
+        params: {
+          message: 'message_file_path'
+        }
+      });
+
+      const res = await main(readConfig, readFile, '/a/path');
+
+      sinon.assert.calledWith(readFile, '/a/path/message_file_path');
+      sinon.assert.calledWith(sendFullMessage, message);
+    });
+
+    it('it gives priority to a full message over chat_id/text', async () => {
+      readConfig = sinon.stub().returns({
+        api: { sendFullMessage },
+        params: {
+          chat_id: 'chat_id_file_path',
+          text: 'text_file_path',
+          message: 'message_file_path'
+        }
+      });
+
+      const res = await main(readConfig, readFile, '/a/path');
+
+      sinon.assert.calledWith(readFile, '/a/path/message_file_path');
+      sinon.assert.calledWith(sendFullMessage, message);
+    });
+  });
 });

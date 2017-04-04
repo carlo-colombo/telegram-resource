@@ -14,16 +14,24 @@ async function main(
       api,
       params: {
         chat_id: chat_id_file,
-        text: text_file
+        text: text_file,
+        message: message_file_path
       }
     } = await readConfig();
 
-    const [chat_id, text]: [string, string] = await Promise.all([
-      readFile(path.join(dest, chat_id_file)),
-      readFile(path.join(dest, text_file))
-    ]);
+    let resp;
+    if (message_file_path) {
+      const message = await readFile(path.join(dest, message_file_path));
+      resp = await api.sendFullMessage(JSON.parse(message));
+    } else {
+      const [chat_id, text]: [string, string] = await Promise.all([
+        readFile(path.join(dest, chat_id_file)),
+        readFile(path.join(dest, text_file))
+      ]);
 
-    const resp = await api.sendMessage(chat_id, text);
+      resp = await api.sendMessage(chat_id, text);
+    }
+
     const { result: { chat } } = resp;
 
     return {
