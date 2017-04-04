@@ -31,10 +31,14 @@ module.exports = class Api {
       offset
     });
   }
+  sendFullMessage(message) {
+    return request(
+      this.hostname,
+      `/bot${this.telegram_key}/sendMessage`,
+      message
+    );
+  }
   sendMessage(chat_id, text) {
-    return request(this.hostname, `/bot${this.telegram_key}/sendMessage`, {
-      chat_id,
-      text
-    });
+    return sendFullMessage({ chat_id, text });
   }
 };
