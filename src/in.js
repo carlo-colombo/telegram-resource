@@ -22,7 +22,8 @@ async function main(readConfig, check, writeFile, dest) {
       version: { update_id: update_id.toString() },
       metadata: [
         kv('username', message.chat.username),
-        kv('chat_id', message.chat.id)
+        kv('chat_id', message.chat.id),
+        kv('text', message.text)
       ]
     };
   } catch (e) {

@@ -54,7 +54,8 @@ describe('in', () => {
           version,
           metadata: [
             { name: 'username', value: 'carlo' },
-            { name: 'chat_id', value: '123' }
+            { name: 'chat_id', value: '123' },
+            { name: 'text', value: 'hi' }
           ]
         });
       });
