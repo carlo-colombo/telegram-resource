@@ -6,42 +6,44 @@ resource_types:
     tag: latest-dev
 
 resources:
-- name: telegram2
+- name: start
+  check_every: 5s
   type: telegram
   source:
-    filter: task2
+    filter: '/start'
     telegram_key: {{telegram_bot_token}}
-- name: telegram1
+- name: answer
   type: telegram
   source:
-    #filter: task1
     telegram_key: {{telegram_bot_token}}
-- name: git-tasks
-  type: git
+
+task_resource: &task_resource
+  type: docker-image
   source:
-    uri: https://gist.github.com/5d13889c5e7e6ce7d102dfd9189ee325.git
-    branch: master
+    repository: concourse/buildroot
+    tag: 'curl'
 
 jobs:
-- name: test-task
+- name: run-test
   plan:
-  - get: telegram1
+  - get: start
     trigger: true
-  - get: git-tasks
-  - task: read-message
-    file: git-tasks/read-message.yml
-  - put: telegram2
+  - task: test-code
+    config:
+      platform: linux
+      image_resource: *task_resource
+      inputs:
+      - name: start
+      outputs:
+      - name: answer
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          jq .chat.id < start/message > answer/chat_id
+          echo "Your chat id is $(cat answer/chat_id)" > answer/text
+  - put: answer
     params:
-      chat_id: telegram2/chat_id
-      text: telegram2/text
-- name: test-task2
-  plan:
-  - get: telegram2
-    trigger: true
-  - get: git-tasks
-  - task: read-message
-    file: git-tasks/prepare-message.yml
-  - put: telegram1
-    params:
-      chat_id: telegram1/chat_id
-      text: telegram1/text
+      chat_id: answer/chat_id
+      text: answer/text
