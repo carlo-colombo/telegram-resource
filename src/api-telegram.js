@@ -39,6 +39,6 @@ module.exports = class Api {
     );
   }
   sendMessage(chat_id, text) {
-    return sendFullMessage({ chat_id, text });
+    return this.sendFullMessage({ chat_id, text });
   }
 };
