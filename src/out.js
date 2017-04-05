@@ -15,7 +15,8 @@ async function main(
       params: {
         chat_id: chat_id_file,
         text: text_file,
-        message: message_file_path
+        message: message_file_path,
+        options
       }
     } = await readConfig();
 
@@ -29,7 +30,7 @@ async function main(
         readFile(path.join(dest, text_file))
       ]);
 
-      resp = await api.sendMessage(chat_id, text);
+      resp = await api.sendMessage(chat_id, text, options);
     }
 
     const { result: { chat } } = resp;

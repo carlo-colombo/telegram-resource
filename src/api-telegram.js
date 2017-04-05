@@ -21,24 +21,31 @@ const request = (host, path, data) => new Promise((resolve, reject) => {
   req.end();
 });
 
-module.exports = class Api {
-  constructor(telegram_key) {
-    this.telegram_key = telegram_key;
-    this.hostname = 'api.telegram.org';
-  }
-  getUpdates(offset = 0) {
-    return request(this.hostname, `/bot${this.telegram_key}/getupdates`, {
-      offset
-    });
-  }
-  sendFullMessage(message) {
-    return request(
-      this.hostname,
-      `/bot${this.telegram_key}/sendMessage`,
-      message
-    );
-  }
-  sendMessage(chat_id, text) {
-    return this.sendFullMessage({ chat_id, text });
-  }
+function apiFactory(request) {
+  return class Api {
+    constructor(telegram_key) {
+      this.telegram_key = telegram_key;
+      this.hostname = 'api.telegram.org';
+    }
+    getUpdates(offset = 0) {
+      return request(this.hostname, `/bot${this.telegram_key}/getUpdates`, {
+        offset
+      });
+    }
+    sendFullMessage(message) {
+      return request(
+        this.hostname,
+        `/bot${this.telegram_key}/sendMessage`,
+        message
+      );
+    }
+    sendMessage(chat_id, text, options) {
+      return this.sendFullMessage(Object.assign({ chat_id, text }, options));
+    }
+  };
+}
+
+module.exports = {
+  apiFactory,
+  request
 };

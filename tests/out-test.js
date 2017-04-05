@@ -19,7 +19,10 @@ describe('out', () => {
       api: { sendMessage },
       params: {
         chat_id: 'chat_id_file_path',
-        text: 'text_file_path'
+        text: 'text_file_path',
+        options: {
+          parse_mode: 'Markdown'
+        }
       }
     });
   });
@@ -27,7 +30,9 @@ describe('out', () => {
   it('call the api to send a message', async () => {
     await main(readConfig, readFile, '/a/folder');
 
-    sinon.assert.calledWith(sendMessage, '42', 'hello');
+    sinon.assert.calledWith(sendMessage, '42', 'hello', {
+      parse_mode: 'Markdown'
+    });
     sinon.assert.calledWith(readFile, '/a/folder/chat_id_file_path');
     sinon.assert.calledWith(readFile, '/a/folder/text_file_path');
   });
