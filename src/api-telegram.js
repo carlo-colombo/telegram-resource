@@ -2,7 +2,7 @@ const https = require('https');
 const querystring = require('querystring');
 
 const request = (host, path, data) => new Promise((resolve, reject) => {
-  const qs = querystring.stringify(data);
+  const payload = JSON.stringify(data);
 
   const req = https.request(
     {
