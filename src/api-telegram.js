@@ -7,7 +7,12 @@ const request = (host, path, data) => new Promise((resolve, reject) => {
   const req = https.request(
     {
       host,
-      path: path + '?' + qs
+      path: path,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-length': Buffer.byteLength(payload)
+      }
     },
     res => {
       let content = '';
@@ -17,6 +22,7 @@ const request = (host, path, data) => new Promise((resolve, reject) => {
     }
   );
 
+  req.write(payload);
   req.on('error', reject);
   req.end();
 });
