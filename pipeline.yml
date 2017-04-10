@@ -16,6 +16,12 @@ resources:
   type: telegram
   source:
     telegram_key: {{telegram_bot_token}}
+- name: release
+  check_every: 5s
+  type: telegram
+  source:
+    filter: 'make_release'
+    telegram_key: {{telegram_bot_token}}
 
 task_resource: &task_resource
   type: docker-image
@@ -24,11 +30,11 @@ task_resource: &task_resource
     tag: 'curl'
 
 jobs:
-- name: run-test
+- name: send /start
   plan:
   - get: start
     trigger: true
-  - task: test-code
+  - task: prepare-answer
     config:
       platform: linux
       image_resource: *task_resource
@@ -41,9 +47,26 @@ jobs:
         args:
         - -exc
         - |
-          jq .chat.id < start/message > answer/chat_id
-          echo "Your chat id is $(cat answer/chat_id)" > answer/text
+          jq '{chat_id: .chat.id, text: "hello", reply_markup:{keyboard:[[{text: "make_release"}],[{text: "make_product"}]]}}' < start/message > answer/message
+          echo "Your chat id is \`$(cat answer/chat_id)\`" > answer/text
+          jq . < answer/message
   - put: answer
     params:
-      chat_id: answer/chat_id
-      text: answer/text
+      message: answer/message
+
+- name: make release
+  plan:
+  - get: release
+    trigger: true
+  - task: test-code
+    config:
+      platform: linux
+      image_resource: *task_resource
+      inputs:
+      - name: release
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          jq . < release/message
