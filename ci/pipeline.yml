@@ -9,7 +9,7 @@ resources:
   type: git
   source:
     uri: &git-repo git@github.com:carlo-colombo/telegram-resource.git
-    branch: &git-branch refactor-to-js
+    branch: &git-branch master
     private_key: {{private_key}}
 - name: docker-telegram-resource
   type: docker-image
@@ -83,7 +83,7 @@ jobs:
           git config --global user.name $GIT_USER_NAME
           cd git-telegram-resource
           git branch
-          git checkout refactor-to-js
+          git checkout master
           npm version $VERSION -m"bump to $VERSION [skip ci]"
           cat package.json | jq '.version'
   - put: git-telegram-resource
