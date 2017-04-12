@@ -1,14 +1,8 @@
-/* @flow */
+/*  */
 const Api = require('./api-telegram');
 const path = require('path');
 
-import type { Configuration, ReadConfiguration, Metadata } from './types';
-
-async function main(
-  readConfig: ReadConfiguration,
-  readFile: Function,
-  dest: string
-): Promise<{ version: Object, metadata: Array<Metadata> }> {
+async function main(readConfig, readFile, dest) {
   try {
     const {
       api,
@@ -25,7 +19,7 @@ async function main(
       const message = await readFile(path.join(dest, message_file_path));
       resp = await api.sendFullMessage(JSON.parse(message));
     } else {
-      const [chat_id, text]: [string, string] = await Promise.all([
+      const [chat_id, text] = await Promise.all([
         readFile(path.join(dest, chat_id_file)),
         readFile(path.join(dest, text_file))
       ]);

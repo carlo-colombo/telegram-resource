@@ -1,9 +1,8 @@
-/* @flow */
+/*  */
 const fs = require('fs');
 
-import type { ConcourseConfiguration, Configuration } from './types';
 
-function readFile(file: string): Promise<string> {
+function readFile(file) {
   return new Promise((resolve, reject) => {
     fs.readFile(file, 'utf8', (err, data) => {
       if (err) return reject(err);
@@ -12,7 +11,7 @@ function readFile(file: string): Promise<string> {
   });
 }
 
-function writeFile(file: string, content: string): Promise<any> {
+function writeFile(file, content) {
   return new Promise((resolve, reject) => {
     fs.writeFile(file, content, err => {
       if (err) return reject(err);
@@ -21,7 +20,7 @@ function writeFile(file: string, content: string): Promise<any> {
   });
 }
 
-function kv(name: string, value: any): { name: string, value: string } {
+function kv(name, value) {
   return {
     name,
     value: value.toString()
@@ -29,7 +28,7 @@ function kv(name: string, value: any): { name: string, value: string } {
 }
 
 const jsonStdin = () => new Promise((resolve, reject) => {
-  let content: string = '';
+  let content = '';
   process.stdin.resume();
   process.stdin.on('data', buf => content += buf.toString());
   process.stdin.on('end', () => {
@@ -41,14 +40,14 @@ const jsonStdin = () => new Promise((resolve, reject) => {
   });
 });
 
-async function jsonStdout(val: any): Promise<any> {
+async function jsonStdout(val) {
   process.stdout.write(JSON.stringify(await val));
 }
 
 async function readConfig(
-  config: Promise<ConcourseConfiguration> | ConcourseConfiguration,
-  MessagingApi: Function
-): Promise<Configuration> {
+  config,
+  MessagingApi
+) {
   const {
     source: { filter = '.*', telegram_key, flags },
     version,
