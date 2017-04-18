@@ -19,3 +19,50 @@ resources:
     flags: i
     telegram_key: {{telegram_bot_token}}
 ```
+
+Fetching messages:
+
+```
+- get: start
+  trigger: true
+```
+
+Send a full featured [message](https://core.telegram.org/bots/api#sendmessage):
+
+```
+- put: answer
+  params:
+    message: answer/message
+```
+
+
+Send a simple message:
+
+```
+- put: answer
+  params:
+    chat_id: answer/chat_id
+    text: answer/text
+```
+
+## Behavior
+
+### `check`: Check for new messages
+
+Returns the recent messages sent to the telegram bot, if filter is defined it will return only the messages matching the regex
+
+### `in`: Read a message
+
+Outputs 1 file:
+* `message`: Contains the message as retrieved from telegram api, it is a json rappresenting an [update object](https://core.telegram.org/bots/api#update). Only update of type `message` are supported right now
+
+### `out`: Send a message
+
+#### Parameters
+
+`text` and `chat_id` or `message` are required, if all present `message` has precedence over the pair `chat_id` `text`
+
+* `text`: Text of the message to be sent
+* `chat_id`: Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
+* `message`: A json rappresenting a full message to be sent using the api, https://core.telegram.org/bots/api#sendmessage
+
