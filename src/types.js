@@ -2,7 +2,7 @@ export type Configuration = {
   regex: RegExp,
   api: Object,
   version: Object
-};
+}
 
 export type ConcourseConfiguration = {
   source: {
@@ -11,8 +11,8 @@ export type ConcourseConfiguration = {
     flags: RegExp$flags
   },
   version: Object
-};
+}
 
-export type ReadConfiguration = (...rest: Array<any>) => Promise<Configuration>;
+export type ReadConfiguration = (...rest: Array<any>) => Promise<Configuration>
 
-export type Metadata = { name: string, value: string };
+export type Metadata = { name: string, value: string }
