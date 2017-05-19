@@ -16,11 +16,17 @@ resources:
   type: telegram
   source:
     telegram_key: {{telegram_bot_token}}
-- name: release
+- name: red pill
   check_every: 5s
   type: telegram
   source:
-    filter: 'make_release'
+    filter: 'red pill'
+    telegram_key: {{telegram_bot_token}}
+- name: blue pill
+  check_every: 5s
+  type: telegram
+  source:
+    filter: 'blue pill'
     telegram_key: {{telegram_bot_token}}
 
 task_resource: &task_resource
@@ -29,44 +35,102 @@ task_resource: &task_resource
     repository: concourse/buildroot
     tag: 'curl'
 
+task_resource: &task_resource_py
+  type: docker-image
+  source:
+    repository: python
+    tag: 3-alpine
+
 jobs:
-- name: send /start
+- name: send start
   plan:
   - get: start
     trigger: true
   - task: prepare-answer
     config:
       platform: linux
-      image_resource: *task_resource
+      image_resource: *task_resource_py
       inputs:
       - name: start
       outputs:
       - name: answer
+      params:
+        message: |
+          https://en.wikipedia.org/wiki/File:Red_and_blue_pill.jpg
+          This is your last chance. After this, there is no turning back. You take the blue pill—the story ends,
+          you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland,
+          and I show you how deep the rabbit hole goes.
+
+          Remember: all I\'m offering is the truth. Nothing more.
       run:
-        path: sh
+        path: python3
         args:
-        - -exc
+        - -c
         - |
-          jq '{chat_id: .chat.id, text: "hello", reply_markup:{keyboard:[[{text: "make_release"}],[{text: "make_product"}]]}}' < start/message > answer/message
-          echo "Your chat id is \`$(cat answer/chat_id)\`" > answer/text
-          jq . < answer/message
+          import json, os
+
+          with open('start/message') as msg_file, open('answer/message','w+') as answer_file:
+            msg = json.load(msg_file)
+            chat_id = msg['chat']['id']
+            answer = {
+              'chat_id': chat_id,
+              'text': os.environ['message'],
+              'reply_markup': {
+                'keyboard': [
+                    [{'text': "blue pill"}],
+                    [{'text': "red pill"}]
+                  ]
+              }
+            }
+            json.dump(answer, answer_file)
+            print("Your chat id is '%s'" % chat_id)
+
+
   - put: answer
     params:
       message: answer/message
 
-- name: make release
+- name: rabbit hole
   plan:
-  - get: release
+  - get: red pill
+    trigger: true
+  - task: test-code
+    config:
+      platform: linux
+      image_resource: *task_resource_py
+      inputs:
+      - name: red pill
+      run:
+        path: python3
+        args:
+        - -c
+        - |
+          with open('red pill/message') as f:
+            print(f.read())
+            print('the red pill')
+
+- name: wake up in your bed
+  plan:
+  - get: blue pill
     trigger: true
   - task: test-code
     config:
       platform: linux
       image_resource: *task_resource
       inputs:
-      - name: release
+      - name: blue pill
+      outputs:
+      - name: answer
+      params:
+        MESSAGE: the story ends, you wake up in your bed and believe whatever you want to believe.
       run:
         path: sh
         args:
         - -exc
         - |
-          jq . < release/message
+          echo "$MESSAGE" > answer/text
+          jq '.chat.id' < 'blue pill/message' > answer/chat_id
+  - put: answer
+    params:
+      text: answer/text
+      chat_id: answer/chat_id
