@@ -3,6 +3,7 @@ resource_types:
   type: docker-image
   source:
     repository: carlocolombo/telegram-resource
+    tag: latest-dev
 
 resources:
 - name: git-telegram-resource
@@ -135,5 +136,27 @@ jobs:
   - get: docker-telegram-resource
     trigger: true
     passed: [build-docker-image]
-  - get: telegram-resource
+  - get: dev-version
+    passed: [build-docker-image]
+  - task: prepare-message
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: carlocolombo/ci-task-runner
+      inputs:
+      - name: dev-version
+      run:
+        path: sh
+        args:
+        - -xce
+        - |
+          echo '@concourse_build' > message/chat_id
+      outputs:
+      - name: message
+  - put: telegram-resource
+    params:
+      chat_id: message/chat_id
+      text: dev-version/version
 
