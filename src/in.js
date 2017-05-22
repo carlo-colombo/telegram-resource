@@ -8,7 +8,11 @@ async function main(readConfig, check, writeFile, dest) {
   try {
     const { regex, api, version } = await readConfig()
 
-    const { update_id, message } = (await check(api, version, regex)).pop() | {}
+    const { update_id, message } = (await check(
+      api,
+      version,
+      regex
+    )).pop() || {}
 
     if (!message) return {}
 
