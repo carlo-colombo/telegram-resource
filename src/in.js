@@ -23,7 +23,7 @@ async function main(readConfig, check, writeFile, dest) {
       ]
     }
   } catch (e) {
-    console.info('error', e)
+    console.error('error', e)
     return {}
   }
 }
