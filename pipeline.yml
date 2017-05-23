@@ -55,13 +55,11 @@ jobs:
       outputs:
       - name: answer
       params:
-        message: |
-          https://en.wikipedia.org/wiki/File:Red_and_blue_pill.jpg
-          This is your last chance. After this, there is no turning back. You take the blue pill—the story ends,
+        message: "This is your last chance. After this, there is no turning back. You take the blue pill—the story ends,
           you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland,
           and I show you how deep the rabbit hole goes.
 
-          Remember: all I\'m offering is the truth. Nothing more.
+          Remember: all I'm offering is the truth. Nothing more."
       run:
         path: python3
         args:
@@ -94,6 +92,8 @@ jobs:
   plan:
   - get: red pill
     trigger: true
+  - get: start
+    passed: [send start]
   - task: test-code
     config:
       platform: linux
@@ -113,6 +113,8 @@ jobs:
   plan:
   - get: blue pill
     trigger: true
+  - get: start
+    passed: [send start]
   - task: test-code
     config:
       platform: linux
