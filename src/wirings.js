@@ -1,4 +1,3 @@
-/*  */
 const { apiFactory, request } = require('./api-telegram')
 const { jsonStdin, readConfig: _readConfig } = require('./utils.js')
 

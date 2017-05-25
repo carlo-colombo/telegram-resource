@@ -1,4 +1,3 @@
-/*  */
 const Api = require('./api-telegram')
 const path = require('path')
 
