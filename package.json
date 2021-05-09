@@ -17,7 +17,7 @@
   "homepage": "https://github.com/carlo-colombo/telegram-resource#readme",
   "description": "",
   "devDependencies": {
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "mocha": "^3.2.0",
     "should": "^11.1.2",
     "sinon": "2.3.1"
